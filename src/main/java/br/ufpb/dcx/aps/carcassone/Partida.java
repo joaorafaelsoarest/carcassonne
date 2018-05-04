@@ -64,6 +64,7 @@ public class Partida {
 			throw new ExcecaoJogo("Não pode girar tiles com a partida finalizada");
 		}
 		proximoTile.girar();
+		
 		return this;
 	}
 
@@ -72,7 +73,7 @@ public class Partida {
 		if (proximoTile != null) {
 			proximoTile.reset();
 		}
-		
+		tilesParaUsar.add(proximoTile);
 
 	}
 
@@ -82,7 +83,10 @@ public class Partida {
 	}
 
 	public Partida posicionarTile(Tile tileReferencia, Lado ladoTileReferencia) {
+		statusTurno = Status.T_POS;
+		proximoTile = tilesParaUsar.get(tilesParaUsar.size() - 1);
 		tabuleiro.posicionar(tileReferencia, ladoTileReferencia, proximoTile);
+		pegarProximoTile();
 		return this;
 	}
 
