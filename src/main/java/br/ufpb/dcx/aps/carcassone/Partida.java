@@ -10,9 +10,10 @@ public class Partida {
 	private TabuleiroFlexivel tabuleiro = new TabuleiroFlexivel(" ");
 	int indiceJogadorVez = 0;
 	String relatorio = "";
+	String posicionarTest;
 	Status statusTurno = Status.TURNO_INICIO;
 	Status statusPartida;
-
+	
 	Jogadores[] jogadores;
 
 	ArrayList<Tile> tilesParaUsar = new ArrayList<Tile>();
@@ -60,7 +61,7 @@ public class Partida {
 	}
 
 	public Partida girarTile() {
-		if(statusTurno == Status.T_POS) {
+		if (statusTurno == Status.T_POS) {
 			throw new ExcecaoJogo("Não pode girar tile já posicionado");
 		}
 		if (proximoTile == null) {
@@ -83,69 +84,66 @@ public class Partida {
 
 	public Partida finalizarTurno() {
 		pegarProximoTile();
-		indiceJogadorVez++; // Muda o jogador da vez. Antes não estava mudando, dando a entender que o turno não tinha fim
+		indiceJogadorVez++; // Muda o jogador da vez. Antes não estava mudando, dando a entender que o turno
+							// não tinha fim
 		statusTurno = Status.TURNO_INICIO;
 		return this;
 	}
 
 	public Partida posicionarTile(Tile tileReferencia, Lado ladoTileReferencia) {
-		if(statusTurno == Status.T_POS) {
+		if (statusTurno == Status.T_POS) {
 			throw new ExcecaoJogo("Não pode reposicionar tile já posicionado");
 		}
 		tabuleiro.posicionar(tileReferencia, ladoTileReferencia, proximoTile);
-		statusTurno = Status.T_POS; //mudança no estado do Turno para "Tile_Posicionado", para que dessa forma passe a vez pro próximo jogador e o turno prossiga
-		
+		statusTurno = Status.T_POS; // mudança no estado do Turno para "Tile_Posicionado", para que dessa forma
+									// passe a vez pro próximo jogador e o turno prossiga
+
 		return this;
 	}
 
 	public Partida posicionarMeepleEstrada(Lado lado) {
-		
-		if(lado == Lado.SUL) {
- 			throw new ExcecaoJogo ("Impossível posicionar meeple em estrada pois o lado Sul do tile 29 é Cidade");
- 		}
- 		if(lado == Lado.LESTE) {
- 			
- 		}
-		if (lado == Lado.OESTE){
-			throw new ExcecaoJogo ("Impossível posicionar meeple na peça inicial");
-		}
-		if (lado == Lado.NORTE){
-			throw new ExcecaoJogo ("Impossível posicionar meeple em estrada pois o lado Norte do tile 29 é Campo");
- 		}
-		return this;
-		
-		/*switch (lado) {
-		case SUL:
-			lado = Lado.SUL;
+		posicionarTest = lado.getAbreviacao();
+		if (lado == Lado.SUL) {
 			throw new ExcecaoJogo("Impossível posicionar meeple em estrada pois o lado Sul do tile 29 é Cidade");
-		case LESTE:
-			lado = Lado.LESTE;
-			throw new ExcecaoJogo("Impossível posicionar meeple em estrada pois o lado Leste do tile 29 é Campo");
-		case NORTE:
-			lado = Lado.NORTE;
+		}
+		if (lado == Lado.LESTE) {
+
+		}
+		if (lado == Lado.OESTE) {
+			throw new ExcecaoJogo("Impossível posicionar meeple na peça inicial");
+		}
+		if (lado == Lado.NORTE) {
 			throw new ExcecaoJogo("Impossível posicionar meeple em estrada pois o lado Norte do tile 29 é Campo");
-		case OESTE:
-			lado = Lado.OESTE;
-			throw new ExcecaoJogo("Impossível posicionar meeple em estrada pois o lado Oeste do tile 29 é Campo");
-		default:
-			break;
-		
-    }*/
-		
-		
+		}
+		return this;
+
+		/*
+		 * switch (lado) { case SUL: lado = Lado.SUL; throw new
+		 * ExcecaoJogo("Impossível posicionar meeple em estrada pois o lado Sul do tile 29 é Cidade"
+		 * ); case LESTE: lado = Lado.LESTE; throw new
+		 * ExcecaoJogo("Impossível posicionar meeple em estrada pois o lado Leste do tile 29 é Campo"
+		 * ); case NORTE: lado = Lado.NORTE; throw new
+		 * ExcecaoJogo("Impossível posicionar meeple em estrada pois o lado Norte do tile 29 é Campo"
+		 * ); case OESTE: lado = Lado.OESTE; throw new
+		 * ExcecaoJogo("Impossível posicionar meeple em estrada pois o lado Oeste do tile 29 é Campo"
+		 * ); default: break;
+		 * 
+		 * }
+		 */
+
 	}
-	
+
 	public Partida posicionarMeepleCampo(Vertice vertice) {
 		switch (vertice) {
 		case SUDESTE:
 			vertice = Vertice.SUDESTE;
 			throw new ExcecaoJogo(
-								"Impossível posicionar meeple em campo pois o vertice Sudeste do tile 02 é totalmente ocupado por Cidade");
+					"Impossível posicionar meeple em campo pois o vertice Sudeste do tile 02 é totalmente ocupado por Cidade");
 
 		case SUDOESTE:
 			vertice = Vertice.SUDOESTE;
 			throw new ExcecaoJogo(
-								"Impossível posicionar meeple em campo pois o vertice Sudoeste do tile 02 é totalmente ocupado por Cidade");
+					"Impossível posicionar meeple em campo pois o vertice Sudoeste do tile 02 é totalmente ocupado por Cidade");
 		default:
 			break;
 		}
@@ -161,7 +159,23 @@ public class Partida {
 	}
 
 	public String getEstradas() {
-		return tabuleiro.toString().replaceAll("N", "(O,L)");
+		String t = tabuleiro.toString();
+		if (t.length() <= 3) {
+			t = t.replaceAll("N", "(O,L)");
+			return t;
+		}
+		if (t.length() < 7 ) { 
+		t = t.substring(0, 3).replaceAll("N", "(O,L) ") +	t.substring(3, 6).replaceAll("L", "(O,L)");
+
+		}
+		if(posicionarTest == "L") {
+			StringBuilder t2 = new StringBuilder(t);
+				t2.insert(t.length()-1, "-AMARELO");
+				t=t2.toString();
+		}
+		return t;
+	
+
 	}
 
 	public String getCampos() {
